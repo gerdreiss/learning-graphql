@@ -17,7 +17,7 @@ object api1:
       dbService
         .getLastOrders(count)
         .flatMap { orders =>
-          UIO.foreach(orders) { order =>
+          UIO.foreachPar(orders) { order =>
             for
               customer <- dbService.getCustomer(order.customerId)
               products <- getProducts(order.products)
