@@ -6,6 +6,7 @@
 .history/
 .metals/
 .vscode/
+node_modules/
 out/
 target/
 *.worksheet.sc
