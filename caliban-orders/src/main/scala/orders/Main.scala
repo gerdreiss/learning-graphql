@@ -16,7 +16,7 @@ object Main extends ZIOAppDefault:
       _           <- interpreter.execute(Query.orders)
       dbHits      <- dbService.hits
       _           <- IO.debug(s"Naive Approach - DB Hits: $dbHits")
-    yield 0
+    yield dbHits
 
   val test2: IO[ValidationError, Int] =
     for
@@ -27,7 +27,7 @@ object Main extends ZIOAppDefault:
       _           <- interpreter.execute(Query.orders)
       dbHits      <- dbService.hits
       _           <- IO.debug(s"Nested Effects - DB Hits: $dbHits")
-    yield 0
+    yield dbHits
 
   val test3: IO[ValidationError, Int] =
     for
@@ -38,7 +38,7 @@ object Main extends ZIOAppDefault:
       _           <- interpreter.execute(Query.orders)
       dbHits      <- dbService.hits
       _           <- IO.debug(s"ZQuery - DB Hits: $dbHits")
-    yield 0
+    yield dbHits
 
   val test4: IO[ValidationError, Int] =
     for
@@ -49,6 +49,6 @@ object Main extends ZIOAppDefault:
       _           <- interpreter.execute(Query.orders)
       dbHits      <- dbService.hits
       _           <- IO.debug(s"ZQuery with Batch - DB Hits: $dbHits")
-    yield 0
+    yield dbHits
 
   override def run = test1 *> test2 *> test3 *> test4
