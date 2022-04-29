@@ -32,6 +32,6 @@ class DBService(dbHits: Ref[Int]):
   val hits: UIO[Int] = dbHits.get
 
 object DBService:
-  def apply(): UIO[DBService] =
+  def make: UIO[DBService] =
     for dbHits <- Ref.make(0)
     yield new DBService(dbHits)
