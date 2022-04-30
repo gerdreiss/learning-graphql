@@ -12,6 +12,7 @@ object Todos:
   case class QueryArgs(id: UserId)
   case class Query(user: QueryArgs => ZQ[UserView])
 
+  case class TodoView(title: String, completed: Boolean)
   case class UserView(
       name: String,
       username: String,
@@ -22,7 +23,6 @@ object Todos:
       company: Company,
       todos: ZQ[List[TodoView]]
   )
-  case class TodoView(title: String, completed: Boolean)
 
   def resolver(typicodeService: TypicodeService): Query =
 

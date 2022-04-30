@@ -1,4 +1,5 @@
-package typicode.data
+package typicode
+package data
 
 case class Todo(
     userId: UserId,
