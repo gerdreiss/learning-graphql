@@ -4,7 +4,6 @@ import zio.*
 import caliban.CalibanError.ValidationError
 import caliban.GraphQL.graphQL
 import caliban.RootResolver
-import caliban.ResponseValue
 
 import services.*
 import resolvers.*
@@ -33,4 +32,4 @@ object Main extends ZIOAppDefault:
       interpreter     <- api.interpreter
       response        <- interpreter.execute(query)
       _               <- IO.debug(response.data)
-    yield response.data
+    yield ()

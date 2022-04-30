@@ -41,12 +41,15 @@ lazy val backend = project
   .dependsOn(domain.jvm)
 
 lazy val domain = crossProject(JSPlatform, JVMPlatform)
-  // .crossType(CrossType.Pure)
+  .crossType(CrossType.Pure)
   .in(file("modules/domain"))
   .settings(commonSettings)
-  .jsSettings(
-    test := {},
-    scalacOptions ++= List("-scalajs")
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.circe"                      %%% "circe-parser" % "0.14.1",
+      "com.softwaremill.sttp.client3" %%% "core"         % "3.5.2",
+      "com.softwaremill.sttp.client3" %%% "circe"        % "3.5.2"
+    )
   )
 
 val commonSettings = Seq(
