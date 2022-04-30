@@ -10,6 +10,7 @@ Global / semanticdbEnabled    := true // for metals
 
 lazy val root = project
   .in(file("."))
+  .settings(name := "typicode")
   .aggregate(frontend, backend, domain.jvm, domain.js)
 
 lazy val frontend = project

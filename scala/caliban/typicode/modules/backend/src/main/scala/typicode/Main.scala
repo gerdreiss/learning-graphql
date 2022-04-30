@@ -14,8 +14,11 @@ object Main extends ZIOAppDefault:
     """
       |{
       |  user(id: 1) {
+      |      name
       |      username
       |      email
+      |      phone
+      |      website
       |      todos {
       |        title
       |        completed
