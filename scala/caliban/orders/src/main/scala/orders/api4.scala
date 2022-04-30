@@ -41,13 +41,6 @@ object api4:
     def getBrand(id: BrandId): ZQ[Brand]           =
       ZQuery.fromRequest(GetBrand(id))(BrandDataSource)
 
-    def getOrders(count: Int): ZQ[List[OrderView]] =
-      ZQuery
-        .fromZIO(dbService.getLastOrders(count))
-        .map(_.map { order =>
-          OrderView(order.id, getCustomer(order.customerId), getProducts(order.products))
-        })
-
     def getProducts(products: List[(ProductId, Int)]): List[ProductOrderView] =
       products
         .map { case (productId, quantity) =>
@@ -59,5 +52,12 @@ object api4:
             quantity
           )
         }
+
+    def getOrders(count: Int): ZQ[List[OrderView]] =
+      ZQuery
+        .fromZIO(dbService.getLastOrders(count))
+        .map(_.map { order =>
+          OrderView(order.id, getCustomer(order.customerId), getProducts(order.products))
+        })
 
     Query(args => getOrders(args.count))
