@@ -1,0 +1,19 @@
+type Query {
+    shows(titleFilter: String): [Show]
+    show(id: ID!): Show
+}
+
+type Show {
+    id: UUID
+    title: String
+    releaseYear: Int
+    cast: [Actor]
+}
+
+type Actor {
+    name: String
+    born: Date
+}
+
+scalar UUID
+scalar Date

@@ -2,12 +2,16 @@
 .bloop/
 .bsp/
 .dotty-ide*
+.gradle/
 .idea/
 .history/
 .metals/
 .vscode/
+build/
+gradle/
 node_modules/
 out/
 target/
 *.worksheet.sc
+gradlew*
 metals.sbt
