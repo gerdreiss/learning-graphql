@@ -36,8 +36,10 @@ lazy val backend = project
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.ghostdogpr" %% "caliban" % "2.0.0-RC2"
-    )
+      "com.github.ghostdogpr"         %% "caliban"                % "2.0.0-RC2",
+      "com.softwaremill.sttp.client3" %% "httpclient-backend-zio" % "3.5.2"
+    ),
+    excludeDependencies += "org.scala-lang.modules" % "scala-collection-compat_2.13"
   )
   .dependsOn(domain.jvm)
 
@@ -47,9 +49,7 @@ lazy val domain = crossProject(JSPlatform, JVMPlatform)
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "io.circe"                      %%% "circe-parser" % "0.14.1",
-      "com.softwaremill.sttp.client3" %%% "core"         % "3.5.2",
-      "com.softwaremill.sttp.client3" %%% "circe"        % "3.5.2"
+      "dev.zio" %% "zio-json" % "0.3.0-RC7"
     )
   )
 

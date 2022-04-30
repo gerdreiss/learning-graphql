@@ -1,6 +1,9 @@
 package typicode
 package data
 
+import zio.json.DeriveJsonDecoder
+import zio.json.JsonDecoder
+
 case class Geo(
     lat: Double,
     lng: Double
@@ -29,4 +32,10 @@ case class User(
     company: Company,
     phone: String,
     website: String
-)
+) extends TypicodeData
+
+object User:
+  given JsonDecoder[Geo]     = DeriveJsonDecoder.gen[Geo]
+  given JsonDecoder[Address] = DeriveJsonDecoder.gen[Address]
+  given JsonDecoder[Company] = DeriveJsonDecoder.gen[Company]
+  given JsonDecoder[User]    = DeriveJsonDecoder.gen[User]

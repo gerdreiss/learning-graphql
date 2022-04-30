@@ -1,50 +1,52 @@
 package typicode
 package services
 
-import zio.*
+import sttp.client3.*
+import sttp.client3.httpclient.zio.*
+
+import zio.json.JsonDecoder
 
 import data.*
+import sttp.model.*
+import zio.*
 
 trait TypicodeService:
-  def getUser(userId: UserId): ZIO[Any, Nothing, User]
-  def getTodos(userId: UserId): ZIO[Any, Nothing, List[Todo]]
+  def getUser(userId: UserId): Task[User]
+  def getTodos(userId: UserId): Task[TodoList]
+
+case class TypicodeServiceLive() extends TypicodeService:
+
+  private val commonHeaders = Map("Content-Type" -> "application/json")
+
+  private val baseUrl = "https://jsonplaceholder.typicode.com"
+
+  private def getUserURI(userId: UserId): Uri      = uri"$baseUrl/users/$userId"
+  private def getUserTodosURI(userId: UserId): Uri = uri"$baseUrl/users/$userId/todos"
+
+  private def createRequest[T <: TypicodeData](uri: Uri, lastModified: Option[String] = None)(using
+      D: JsonDecoder[T]
+  ): Request[Either[String, T], Any] =
+    val headers = lastModified.map("If-Modified-Since" -> _).foldLeft(commonHeaders)(_ + _)
+    basicRequest
+      .get(uri)
+      .headers(headers)
+      .mapResponse(_.flatMap(D.decodeJson))
+
+  private def getObject[T <: TypicodeData](uri: Uri)(using D: JsonDecoder[T]): ZIO[SttpClient, Throwable, T] =
+    send(createRequest[T](uri))
+      .flatMap { response =>
+        response.code match
+          case StatusCode.Ok =>
+            response.body match
+              case Left(error) => ZIO.fail(new Exception(error))
+              case Right(body) => ZIO.succeed(body)
+          case _             =>
+            ZIO.fail(new Exception(s"Unexpected response code: ${response.code}"))
+      }
+
+  def getUser(userId: UserId): Task[User] = ??? // TODO getObject[User](getUserURI(userId))
+
+  def getTodos(userId: UserId): Task[TodoList] = ??? // TODO getObject[TodoList](getUserTodosURI(userId))
 
 object TypicodeService:
-  def live: ZIO[Any, Nothing, TypicodeService] =
-    ZIO.succeed {
-      new:
-        def getUser(userId: UserId): ZIO[Any, Nothing, User]        =
-          ZIO.succeed {
-            User(
-              id = 1,
-              name = "John Doe",
-              username = "doe",
-              email = "john.doe@mail.com",
-              address = Address(
-                street = "Main St",
-                suite = "Apt 1",
-                city = "New York",
-                zipcode = "10001",
-                geo = Geo(
-                  lat = 40.7128,
-                  lng = -74.0060
-                )
-              ),
-              company = Company(
-                name = "Company",
-                catchPhrase = "Company catch phrase",
-                bs = "Company bs"
-              ),
-              phone = "1234567890",
-              website = "company.com"
-            )
-          }
-        def getTodos(userId: UserId): ZIO[Any, Nothing, List[Todo]] =
-          ZIO.succeed {
-            List(
-              Todo(userId, 1, "Todo 1", false),
-              Todo(userId, 2, "Todo 2", false),
-              Todo(userId, 3, "Todo 3", false)
-            )
-          }
-    }
+  def live: UIO[TypicodeService] = ZIO.succeed(TypicodeServiceLive())
