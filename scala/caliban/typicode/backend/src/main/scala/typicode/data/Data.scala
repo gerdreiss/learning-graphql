@@ -1,4 +1,4 @@
-package typicode
+package typicode.data
 
 type UserId    = Int
 type TodoId    = Int

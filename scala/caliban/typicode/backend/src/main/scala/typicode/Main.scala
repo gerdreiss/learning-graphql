@@ -6,27 +6,31 @@ import caliban.GraphQL.graphQL
 import caliban.RootResolver
 import caliban.ResponseValue
 
+import services.*
+import resolvers.*
+
 object Main extends ZIOAppDefault:
 
-  val query = """
-              |{
-              |  userTodosView(userId: 1) {
-              |    username
-              |  }
-              |}
-              |""".stripMargin
-
-  val program: IO[ValidationError, ResponseValue] =
-    for
-      typicodeService <- TypicodeService.live
-      resolver         = todos.resolver(typicodeService)
-      api              = graphQL(RootResolver(resolver))
-      interpreter     <- api.interpreter
-      response        <- interpreter.execute(query)
-    yield response.data
+  val query =
+    """
+      |{
+      |  user(id: 1) {
+      |      username
+      |      email
+      |      todos {
+      |        title
+      |        completed
+      |      }
+      |  }
+      |}
+      |""".stripMargin
 
   override def run =
     for
-      response <- program
-      _        <- Console.printLine(response)
-    yield ()
+      typicodeService <- TypicodeService.live
+      resolver         = Todos.resolver(typicodeService)
+      api              = graphQL(RootResolver(resolver))
+      interpreter     <- api.interpreter
+      response        <- interpreter.execute(query)
+      _               <- IO.debug(response.data)
+    yield response.data

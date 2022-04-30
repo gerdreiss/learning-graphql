@@ -1,16 +1,19 @@
 package typicode
+package services
 
 import zio.*
 
+import data.*
+
 trait TypicodeService:
-  def getUser(userId: UserId): ZIO[Any, Throwable, User]
-  def getTodos(userId: UserId): ZIO[Any, Throwable, List[Todo]]
+  def getUser(userId: UserId): ZIO[Any, Nothing, User]
+  def getTodos(userId: UserId): ZIO[Any, Nothing, List[Todo]]
 
 object TypicodeService:
   def live: ZIO[Any, Nothing, TypicodeService] =
     ZIO.succeed {
       new:
-        def getUser(userId: UserId): ZIO[Any, Throwable, User]        =
+        def getUser(userId: UserId): ZIO[Any, Nothing, User]        =
           ZIO.succeed {
             User(
               id = 1,
@@ -36,7 +39,7 @@ object TypicodeService:
               website = "company.com"
             )
           }
-        def getTodos(userId: UserId): ZIO[Any, Throwable, List[Todo]] =
+        def getTodos(userId: UserId): ZIO[Any, Nothing, List[Todo]] =
           ZIO.succeed {
             List(
               Todo(userId, 1, "Todo 1", false),
