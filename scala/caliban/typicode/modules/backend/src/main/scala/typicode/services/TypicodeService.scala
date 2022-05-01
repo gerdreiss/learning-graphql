@@ -12,7 +12,7 @@ import zio.*
 
 trait TypicodeService:
   def getUser(userId: UserId): Task[User]
-  def getTodos(userId: UserId): Task[TodoList]
+  def getTodos(userId: UserId): Task[Todos]
 
 case class TypicodeServiceLive() extends TypicodeService:
 
@@ -46,7 +46,7 @@ case class TypicodeServiceLive() extends TypicodeService:
 
   def getUser(userId: UserId): Task[User] = ??? // TODO getObject[User](getUserURI(userId))
 
-  def getTodos(userId: UserId): Task[TodoList] = ??? // TODO getObject[TodoList](getUserTodosURI(userId))
+  def getTodos(userId: UserId): Task[Todos] = ??? // TODO getObject[TodoList](getUserTodosURI(userId))
 
 object TypicodeService:
   def live: UIO[TypicodeService] = ZIO.succeed(TypicodeServiceLive())

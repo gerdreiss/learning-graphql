@@ -26,12 +26,12 @@ object Todos:
 
   def resolver(typicodeService: TypicodeService): Query =
 
-    case class GetTodos(userId: UserId) extends Request[Nothing, List[Todo]]
+    case class GetTodos(userId: UserId) extends Request[Nothing, Todos]
     val TodosDataSource: DataSource[Any, GetTodos] =
       DataSource.fromFunctionZIO("TodosDataSource") { request =>
         typicodeService.getTodos(request.userId)
       }
-    def getTodos(userId: UserId): ZQ[List[Todo]]   =
+    def getTodos(userId: UserId): ZQ[Todos]        =
       ZQuery.fromRequest(GetTodos(userId))(TodosDataSource)
 
     def getUser(userId: UserId): ZQ[UserView] =
@@ -46,7 +46,7 @@ object Todos:
             user.website,
             user.address,
             user.company,
-            getTodos(user.id).map(_.map(todo => TodoView(todo.title, todo.completed)))
+            getTodos(user.id).map(_.data.map(todo => TodoView(todo.title, todo.completed)))
           )
         }
 

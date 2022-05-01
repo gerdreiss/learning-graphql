@@ -11,10 +11,10 @@ case class Todo(
     completed: Boolean
 )
 
-case class TodoList(data: List[Todo]) extends TypicodeData
+case class Todos(data: List[Todo]) extends TypicodeData
 
 object Todo:
   given JsonDecoder[Todo] = DeriveJsonDecoder.gen[Todo]
 
-object TodoList:
-  given JsonDecoder[TodoList] = DeriveJsonDecoder.gen[TodoList]
+object Todos:
+  given JsonDecoder[Todos] = DeriveJsonDecoder.gen[Todos]
