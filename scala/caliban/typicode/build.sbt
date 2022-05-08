@@ -38,7 +38,7 @@ lazy val backend = project
     libraryDependencies ++= Seq(
       "com.github.ghostdogpr"         %% "caliban"                % "2.0.0-RC2",
       "com.softwaremill.sttp.client3" %% "httpclient-backend-zio" % "3.5.2",
-      "dev.zio"                       %% "zio"                    % "2.0.0-RC5"
+      "dev.zio"                       %% "zio"                    % "2.0.0-RC6"
     ),
     excludeDependencies += "org.scala-lang.modules" % "scala-collection-compat_2.13"
   )
@@ -50,7 +50,7 @@ lazy val domain = crossProject(JSPlatform, JVMPlatform)
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio-json" % "0.3.0-RC7"
+      "dev.zio" %% "zio-json" % "0.3.0-RC8"
     )
   )
 

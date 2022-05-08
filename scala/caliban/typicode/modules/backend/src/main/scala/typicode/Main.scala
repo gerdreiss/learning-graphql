@@ -36,6 +36,6 @@ object Main extends ZIOAppDefault:
       interpreter     <- api.interpreter
       response        <- interpreter.execute(query)
       _               <- response match
-                           case GraphQLResponse(data, Nil, _) => IO.debug(data)
-                           case GraphQLResponse(_, es, _)     => IO.foreach(es)(e => IO.debug(e))
+                           case GraphQLResponse(data, Nil, _) => ZIO.debug(data)
+                           case GraphQLResponse(_, es, _)     => ZIO.foreach(es)(e => ZIO.debug(e))
     yield ()

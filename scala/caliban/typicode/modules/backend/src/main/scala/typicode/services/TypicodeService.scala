@@ -44,9 +44,11 @@ case class TypicodeServiceLive() extends TypicodeService:
             ZIO.fail(new Exception(s"Unexpected response code: ${response.code}"))
       }
 
-  def getUser(userId: UserId): Task[User] = getObject[User](getUserURI(userId)).provide(HttpClientZioBackend.layer())
+  def getUser(userId: UserId): Task[User] =
+    getObject[User](getUserURI(userId)).provide(HttpClientZioBackend.layer())
 
-  def getTodos(userId: UserId): Task[Todos] = getObject[Todos](getUserTodosURI(userId)).provide(HttpClientZioBackend.layer())
+  def getTodos(userId: UserId): Task[Todos] =
+    getObject[Todos](getUserTodosURI(userId)).provide(HttpClientZioBackend.layer())
 
 object TypicodeService:
   def live: UIO[TypicodeService] = ZIO.succeed(TypicodeServiceLive())
