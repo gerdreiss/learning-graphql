@@ -1,7 +1,8 @@
 const axios = require('axios');
 const GraphQL = require('graphql');
 const GraphQLScalars = require('graphql-scalars');
-const { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLBoolean } = GraphQL;
+const { GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLBoolean, GraphQLInt, GraphQLString } =
+  GraphQL;
 const { GraphQLEmailAddress } = GraphQLScalars;
 
 const CompanyType = new GraphQLObjectType({
@@ -34,7 +35,7 @@ const AddressType = new GraphQLObjectType({
 
 const UserType = new GraphQLObjectType({
   name: 'User',
-  fields: {
+  fields: () => ({
     id: { type: GraphQLInt },
     name: { type: GraphQLString },
     username: { type: GraphQLString },
@@ -43,7 +44,15 @@ const UserType = new GraphQLObjectType({
     phone: { type: GraphQLString },
     website: { type: GraphQLString },
     company: { type: CompanyType },
-  },
+    todos: {
+      type: new GraphQLList(TodoType),
+      resolve(parent, args) {
+        return axios
+          .get(`https://jsonplaceholder.typicode.com/todos?userId=${parent.id}`)
+          .then((res) => res.data);
+      },
+    },
+  }),
 });
 
 const TodoType = new GraphQLObjectType({
@@ -54,9 +63,9 @@ const TodoType = new GraphQLObjectType({
     completed: { type: GraphQLBoolean },
     user: {
       type: UserType,
-      resolve(parentValue, args) {
+      resolve(parent, args) {
         return axios
-          .get(`https://jsonplaceholder.typicode.com/users/${parentValue.userId}`)
+          .get(`https://jsonplaceholder.typicode.com/users/${parent.userId}`)
           .then((res) => res.data);
       },
     },
