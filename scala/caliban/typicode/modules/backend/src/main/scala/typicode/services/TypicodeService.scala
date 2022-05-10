@@ -3,12 +3,11 @@ package services
 
 import sttp.client3.*
 import sttp.client3.httpclient.zio.*
-
+import sttp.model.*
+import zio.*
 import zio.json.JsonDecoder
 
 import data.*
-import sttp.model.*
-import zio.*
 
 trait TypicodeService:
   def getUser(userId: UserId): Task[User]

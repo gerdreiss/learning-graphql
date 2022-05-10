@@ -2,8 +2,8 @@ package typicode
 
 import caliban.CalibanError.ValidationError
 import caliban.GraphQL.graphQL
-import caliban.{ GraphQLResponse, RootResolver }
-
+import caliban.GraphQLResponse
+import caliban.RootResolver
 import zio.*
 
 import resolvers.*

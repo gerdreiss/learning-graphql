@@ -1,5 +1,4 @@
-package typicode.resolvers
+package typicode
+package resolvers
 
-import zio.query.ZQuery
-
-type ZQ[+A] = ZQuery[Any, Throwable, A]
+type ZQ[+A] = zio.query.ZQuery[Any, Throwable, A]

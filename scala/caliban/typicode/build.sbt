@@ -38,7 +38,8 @@ lazy val backend = project
     libraryDependencies ++= Seq(
       "com.github.ghostdogpr"         %% "caliban"                % "2.0.0-RC2",
       "com.softwaremill.sttp.client3" %% "httpclient-backend-zio" % "3.5.2",
-      "dev.zio"                       %% "zio"                    % "2.0.0-RC6"
+      "dev.zio"                       %% "zio"                    % "2.0.0-RC6",
+      "dev.zio"                       %% "zio-query"              % "0.3.0-RC5"
     ),
     excludeDependencies += "org.scala-lang.modules" % "scala-collection-compat_2.13"
   )
