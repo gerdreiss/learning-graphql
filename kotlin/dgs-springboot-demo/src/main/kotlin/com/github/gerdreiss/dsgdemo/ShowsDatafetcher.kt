@@ -3,6 +3,7 @@ package com.github.gerdreiss.dsgdemo
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsData
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment
+import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import java.time.LocalDate
@@ -22,11 +23,11 @@ class ShowsDataFetcher {
     private val nl = Actor("Natasha Lyonne", LocalDate.of(1979, Month.APRIL, 4))
 
     private val shows = listOf(
-        Show(UUID.randomUUID(), "Stranger Things", 2016, listOf(mbb, wr)),
-        Show(UUID.randomUUID(), "Ozark", 2017, listOf(jb, sf)),
-        Show(UUID.randomUUID(), "The Crown", 2016, listOf(oc, `is`)),
-        Show(UUID.randomUUID(), "Dead to Me", 2019, listOf(ca, jm)),
-        Show(UUID.randomUUID(), "Orange is the New Black", 2013, listOf(nl))
+        Show(UUID.randomUUID(), "Stranger Things", 2016, listOf(mbb, wr), Rating.NO_RATING),
+        Show(UUID.randomUUID(), "Ozark", 2017, listOf(jb, sf), Rating.NO_RATING),
+        Show(UUID.randomUUID(), "The Crown", 2016, listOf(oc, `is`), Rating.NO_RATING),
+        Show(UUID.randomUUID(), "Dead to Me", 2019, listOf(ca, jm), Rating.NO_RATING),
+        Show(UUID.randomUUID(), "Orange is the New Black", 2013, listOf(nl), Rating.NO_RATING)
     )
 
     private fun String.toUUID() = UUID.fromString(this)
@@ -63,6 +64,30 @@ class ShowsDataFetcher {
         return env.getSource<Show>().cast
     }
 
-    data class Show(val id: UUID, val title: String, val releaseYear: Int, val cast: List<Actor>)
+    @DgsMutation
+    fun addRating(env: DgsDataFetchingEnvironment): Rating {
+        val stars = env.getArgument<Int>("rating")
+        require(stars >= 1 || stars <= 5) { "stars must be between 1 and 5" }
+        val title = env.getArgument<String>("title")
+        val show = shows.find { it.title == title }
+            ?: throw IllegalArgumentException("Show with title $title not found")
+        val rating = Rating(stars)
+        show.rating = rating
+        return rating
+    }
+
+    data class Show(
+        val id: UUID,
+        val title: String,
+        val releaseYear: Int,
+        val cast: List<Actor>,
+        var rating: Rating
+    )
+
     data class Actor(val name: String, val born: LocalDate)
+    data class Rating(val avgStars: Int = -1) {
+        companion object {
+            val NO_RATING = Rating()
+        }
+    }
 }

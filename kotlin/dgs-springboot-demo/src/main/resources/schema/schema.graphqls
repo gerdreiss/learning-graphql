@@ -3,16 +3,26 @@ type Query {
     show(id: String!): Show
 }
 
+type Mutation {
+    addRating(title: String!, rating: Int!): Rating
+}
+
+
 type Show {
     id: UUID
     title: String
     releaseYear: Int
-    cast: [Actor]
+    cast: [Actor],
+    rating: Rating
 }
 
 type Actor {
     name: String
     born: Date
+}
+
+type Rating {
+    avgStars: Int
 }
 
 scalar UUID
