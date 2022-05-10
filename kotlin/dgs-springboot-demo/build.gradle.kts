@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.7"
+    id("org.springframework.boot")
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.spring") version "1.6.21"
+    kotlin("jvm")
+    kotlin("plugin.spring")
 }
 
 group = "com.github.gerdreiss"
@@ -17,10 +17,10 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
+    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:_"))
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
-    implementation("com.graphql-java:graphql-java-extended-scalars:18.0")
-    implementation("com.graphql-java:graphql-java-extended-validation:17.0")
+    implementation("com.graphql-java:graphql-java-extended-scalars:_")
+    implementation("com.graphql-java:graphql-java-extended-validation:_")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

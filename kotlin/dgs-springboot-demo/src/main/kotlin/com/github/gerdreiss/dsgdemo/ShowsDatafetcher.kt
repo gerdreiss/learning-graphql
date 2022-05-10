@@ -29,6 +29,8 @@ class ShowsDataFetcher {
         Show(UUID.randomUUID(), "Orange is the New Black", 2013, listOf(nl))
     )
 
+    private fun String.toUUID() = UUID.fromString(this)
+
     // example query
     //{
     //    shows(titleFilter: "The") {
@@ -52,14 +54,13 @@ class ShowsDataFetcher {
     }
 
     @DgsQuery(field = "show")
-    fun getShow(@InputArgument id: UUID): List<Show> {
-        return shows.filter { it.id == id }
+    fun getShow(@InputArgument id: String): Show? {
+        return shows.find { it.id == id.toUUID() }
     }
 
-
     @DgsData(parentType = "Show", field = "cast")
-    fun getCast(dfe: DgsDataFetchingEnvironment): List<Actor> {
-        return dfe.getSource<Show>().cast
+    fun getCast(env: DgsDataFetchingEnvironment): List<Actor> {
+        return env.getSource<Show>().cast
     }
 
     data class Show(val id: UUID, val title: String, val releaseYear: Int, val cast: List<Actor>)
