@@ -39,8 +39,8 @@ case class TypicodeServiceLive() extends TypicodeService:
             response.body match
               case Left(error) => ZIO.fail(new Exception(error))
               case Right(body) => ZIO.succeed(body)
-          case _             =>
-            ZIO.fail(new Exception(s"Unexpected response code: ${response.code}"))
+          case code            =>
+            ZIO.fail(new Exception(s"Unexpected response code: $code"))
       }
 
   def getUser(userId: UserId): Task[User] =
