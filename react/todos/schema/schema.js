@@ -1,8 +1,15 @@
 const axios = require('axios');
 const GraphQL = require('graphql');
 const GraphQLScalars = require('graphql-scalars');
-const { GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLBoolean, GraphQLInt, GraphQLString } =
-  GraphQL;
+const {
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLNonNull,
+  GraphQLBoolean,
+  GraphQLInt,
+  GraphQLString,
+} = GraphQL;
 const { GraphQLEmailAddress } = GraphQLScalars;
 
 const CompanyType = new GraphQLObjectType({
@@ -96,4 +103,22 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({ query: RootQuery });
+const mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addTodo: {
+      type: TodoType,
+      args: {
+        title: { type: new GraphQLNonNull(GraphQLString) },
+        userId: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve(parentValue, { title, userId }) {
+        return axios
+          .post('https://jsonplaceholder.typicode.com/todos', { title, userId, completed: false })
+          .then((res) => res.data);
+      },
+    },
+  },
+});
+
+module.exports = new GraphQLSchema({ query: RootQuery, mutation });
