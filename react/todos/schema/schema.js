@@ -3,9 +3,9 @@ const GraphQL = require('graphql');
 const GraphQLScalars = require('graphql-scalars');
 const {
   GraphQLList,
+  GraphQLNonNull,
   GraphQLObjectType,
   GraphQLSchema,
-  GraphQLNonNull,
   GraphQLBoolean,
   GraphQLInt,
   GraphQLString,
@@ -107,7 +107,7 @@ const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     addTodo: {
-      type: TodoType,
+      type: GraphQLInt,
       args: {
         title: { type: new GraphQLNonNull(GraphQLString) },
         userId: { type: new GraphQLNonNull(GraphQLInt) },
@@ -115,6 +115,29 @@ const mutation = new GraphQLObjectType({
       resolve(parentValue, { title, userId }) {
         return axios
           .post('https://jsonplaceholder.typicode.com/todos', { title, userId, completed: false })
+          .then((res) => res.data);
+      },
+    },
+    deleteTodo: {
+      type: TodoType,
+      args: { id: { type: new GraphQLNonNull(GraphQLInt) } },
+      resolve(parentValue, { id }) {
+        return axios
+          .delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+          .then((res) => res.data);
+      },
+    },
+    updateTodo: {
+      type: TodoType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        title: { type: new GraphQLNonNull(GraphQLString) },
+        completed: { type: GraphQLBoolean },
+        userId: { type: GraphQLInt },
+      },
+      resolve(parentValue, args) {
+        axios
+          .patch(`https://jsonplaceholder.typicode.com/todos/${args.id}`, args)
           .then((res) => res.data);
       },
     },
