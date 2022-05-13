@@ -8,7 +8,7 @@ This is an experimental project to explore [GraphQL](https://graphql.org/) and [
 
 ### Note!
 
-Currently, this project is in progress, and fails with:
+Currently, running the backend of this project fails with:
 
 ```console
 java.lang.NoClassDefFoundError: zio/IO$
