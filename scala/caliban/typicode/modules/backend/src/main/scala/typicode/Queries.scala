@@ -1,12 +1,16 @@
 package typicode
 
+import caliban.schema.Annotations.GQLDescription
 import zio.query.*
 
 import data.*
 import resolvers.*
 
 case class UserQueryArgs(id: UserId)
-case class Queries(user: UserQueryArgs => ZQ[UserView])
+case class Queries(
+    @GQLDescription("Return user data")
+    user: UserQueryArgs => ZQ[UserView]
+)
 
 object Queries:
   val user: String =

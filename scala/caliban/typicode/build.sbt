@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion     := "3.1.2"
+ThisBuild / scalaVersion     := "3.1.1"
 ThisBuild / version          := "0.1.0"
 ThisBuild / organization     := "pro.reiss"
 ThisBuild / organizationName := "reiss.pro"
@@ -27,7 +27,7 @@ lazy val frontend = project
     },
     libraryDependencies ++= Seq(
       "io.indigoengine"       %%% "tyrian"         % "0.3.2",
-      "com.github.ghostdogpr" %%% "caliban-client" % "1.4.0"
+      "com.github.ghostdogpr" %%% "caliban-client" % "2.0.0-RC2"
     )
   )
   .dependsOn(domain.js)
@@ -37,8 +37,9 @@ lazy val backend = project
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.ghostdogpr"         %% "caliban"                % "2.0.0-RC2",
       "com.softwaremill.sttp.client3" %% "httpclient-backend-zio" % "3.5.2",
+      "com.github.ghostdogpr"         %% "caliban"                % "2.0.0-RC2",
+      "com.github.ghostdogpr"         %% "caliban-zio-http"       % "2.0.0-RC2",
       "dev.zio"                       %% "zio"                    % "2.0.0-RC6",
       "dev.zio"                       %% "zio-query"              % "0.3.0-RC5"
     ),
