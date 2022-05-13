@@ -8,9 +8,11 @@ import caliban.schema.Schema
 
 import sttp.client3.httpclient.zio.*
 import zio.*
+import zio.query.*
 
-import resolvers.*
+import data.*
 import services.*
+import resolvers.*
 
 object Main extends ZIOAppDefault:
 
@@ -40,8 +42,13 @@ object Main extends ZIOAppDefault:
       |}
       |""".stripMargin
 
+  case class QueryArgs(id: UserId)
+  case class Queries(user: QueryArgs => RQuery[SttpClient & TypicodeService, UserView])
+
   val userInterpreter = GraphQL
-    .graphQL[SttpClient & TypicodeService, UserSchema.Queries, Unit, Unit](RootResolver(UserSchema.resolver))
+    .graphQL[SttpClient & TypicodeService, Queries, Unit, Unit](
+      RootResolver(Queries(args => UserView.resolve(args.id)))
+    )
     .interpreter
 
   val program =
