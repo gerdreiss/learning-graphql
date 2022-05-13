@@ -1,16 +1,18 @@
 package typicode
 package resolvers
 
+import sttp.client3.httpclient.zio.*
+
 import zio.*
 import zio.query.*
 
 import data.*
 import services.*
 
-object Todos:
+object UserTodos:
 
   case class QueryArgs(id: UserId)
-  case class Query(user: QueryArgs => ZQ[UserView])
+  case class Query(user: QueryArgs => RQuery[SttpClient & TypicodeService, UserView])
 
   case class TodoView(title: String, completed: Boolean)
   case class UserView(
@@ -21,22 +23,21 @@ object Todos:
       website: String,
       address: Address,
       company: Company,
-      todos: ZQ[List[TodoView]]
+      todos: ZQuery[SttpClient & TypicodeService, Throwable, List[TodoView]]
   )
 
-  def resolver(typicodeService: TypicodeService): Query =
-
-    case class GetTodos(userId: UserId) extends Request[Nothing, Todos]
-    val TodosDataSource: DataSource[Any, GetTodos] =
+  def resolver: Query =
+    case class GetTodos(userId: UserId) extends Request[Throwable, Todos]
+    val TodosDataSource: DataSource[SttpClient & TypicodeService, GetTodos]   =
       DataSource.fromFunctionZIO("TodosDataSource") { request =>
-        typicodeService.getTodos(request.userId)
+        TypicodeService.getTodos(request.userId)
       }
-    def getTodos(userId: UserId): ZQ[Todos]        =
+    def getTodos(userId: UserId): RQuery[SttpClient & TypicodeService, Todos] =
       ZQuery.fromRequest(GetTodos(userId))(TodosDataSource)
 
-    def getUser(userId: UserId): ZQ[UserView] =
+    def getUser(userId: UserId): RQuery[SttpClient & TypicodeService, UserView] =
       ZQuery
-        .fromZIO(typicodeService.getUser(userId))
+        .fromZIO(TypicodeService.getUser(userId))
         .map { user =>
           UserView(
             user.name,

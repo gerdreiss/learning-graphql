@@ -1,9 +1,13 @@
 package typicode
 
-import caliban.CalibanError.ValidationError
-import caliban.GraphQL.graphQL
+import caliban.GraphQL
 import caliban.GraphQLResponse
 import caliban.RootResolver
+import caliban.schema.GenericSchema
+import caliban.schema.Schema
+
+import sttp.client3.httpclient.zio.*
+
 import zio.*
 
 import resolvers.*
@@ -28,14 +32,17 @@ object Main extends ZIOAppDefault:
       |}
       |""".stripMargin
 
-  override def run: ZIO[Any, Throwable, Unit] =
+  val program =
     for
-      typicodeService <- TypicodeService.live
-      resolver         = Todos.resolver(typicodeService)
-      api              = graphQL(RootResolver(resolver))
-      interpreter     <- api.interpreter
-      response        <- interpreter.execute(query)
-      _               <- response match
-                           case GraphQLResponse(data, Nil, _) => ZIO.debug(data)
-                           case GraphQLResponse(_, es, _)     => ZIO.foreach(es)(e => ZIO.debug(e))
+      interpreter <-
+        GraphQL
+          .graphQL[SttpClient & TypicodeService, UserTodos.Query, Unit, Unit](RootResolver(UserTodos.resolver))
+          .interpreter
+      response    <- interpreter.execute(query)
+      _           <- response match
+                       case GraphQLResponse(data, Nil, _) => ZIO.debug(data)
+                       case GraphQLResponse(_, es, _)     => ZIO.foreach(es)(e => ZIO.debug(e))
     yield ()
+
+  override def run = program
+    .provide(HttpClientZioBackend.layer(), TypicodeService.live)
