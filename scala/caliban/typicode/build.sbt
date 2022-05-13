@@ -26,7 +26,8 @@ lazy val frontend = project
       _.withSourceMap(false)
     },
     libraryDependencies ++= Seq(
-      "io.indigoengine" %%% "tyrian" % "0.3.2"
+      "io.indigoengine"       %%% "tyrian"         % "0.3.2",
+      "com.github.ghostdogpr" %%% "caliban-client" % "1.4.0"
     )
   )
   .dependsOn(domain.js)
