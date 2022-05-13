@@ -3,14 +3,10 @@ package typicode
 import caliban.GraphQL
 import caliban.GraphQLResponse
 import caliban.RootResolver
-import caliban.schema.GenericSchema
-import caliban.schema.Schema
 
 import sttp.client3.httpclient.zio.*
 import zio.*
-import zio.query.*
 
-import data.*
 import services.*
 import resolvers.*
 

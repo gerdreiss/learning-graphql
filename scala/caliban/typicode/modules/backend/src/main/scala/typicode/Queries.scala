@@ -1,15 +1,12 @@
 package typicode
 
-import sttp.client3.httpclient.zio.*
-import zio.*
 import zio.query.*
 
 import data.*
 import resolvers.*
-import services.*
 
 case class UserQueryArgs(id: UserId)
-case class Queries(user: UserQueryArgs => RQuery[SttpClient & TypicodeService, UserView])
+case class Queries(user: UserQueryArgs => ZQ[UserView])
 
 object Queries:
   val user: String =

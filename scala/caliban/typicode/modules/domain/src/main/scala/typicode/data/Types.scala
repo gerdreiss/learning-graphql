@@ -1,9 +1,6 @@
 package typicode
 package data
 
-import zio.json.DeriveJsonDecoder
-import zio.json.JsonDecoder
-
 type UserId    = Int
 type TodoId    = Int
 type AlbumId   = Int

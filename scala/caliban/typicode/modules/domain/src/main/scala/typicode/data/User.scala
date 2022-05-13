@@ -1,8 +1,7 @@
 package typicode
 package data
 
-import zio.json.DeriveJsonDecoder
-import zio.json.JsonDecoder
+import zio.json.*
 
 case class Geo(
     lat: Double,

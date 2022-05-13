@@ -50,16 +50,16 @@ object TypicodeService:
           .mapResponse(_.flatMap(D.decodeJson))
 
       private def getObject[T <: TypicodeData](uri: Uri)(using D: JsonDecoder[T]): RIO[SttpClient, T] =
-        send(createRequest[T](uri))
-          .flatMap { response =>
-            response.code match
-              case StatusCode.Ok =>
-                response.body match
-                  case Left(error) => ZIO.fail(new Exception(error))
-                  case Right(body) => ZIO.succeed(body)
-              case code          =>
-                ZIO.fail(new Exception(s"Unexpected response code: $code"))
-          }
+        for
+          response <- send(createRequest[T](uri))
+          result   <- response.code match
+                        case StatusCode.Ok =>
+                          response.body match
+                            case Right(body) => ZIO.succeed(body)
+                            case Left(error) => ZIO.fail(new Exception(error))
+                        case code          =>
+                          ZIO.fail(new Exception(s"Unexpected response code: $code"))
+        yield result
 
       def getUser(userId: UserId): ZIO[SttpClient, Throwable, User] =
         getObject[User](getUserURI(userId))

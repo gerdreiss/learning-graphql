@@ -1,8 +1,6 @@
 package typicode
 package resolvers
 
-import sttp.client3.httpclient.zio.*
-
 import zio.query.*
 
 import data.*
@@ -16,13 +14,13 @@ case class UserView(
     website: String,
     address: Address,
     company: Company,
-    todos: RQuery[SttpClient & TypicodeService, List[TodoView]],
-    posts: RQuery[SttpClient & TypicodeService, List[PostView]],
-    albums: RQuery[SttpClient & TypicodeService, List[AlbumView]]
+    todos: ZQ[List[TodoView]],
+    posts: ZQ[List[PostView]],
+    albums: ZQ[List[AlbumView]]
 )
 
 object UserView:
-  def resolve(userId: UserId): RQuery[SttpClient & TypicodeService, UserView] =
+  def resolve(userId: UserId): ZQ[UserView] =
     ZQuery
       .fromZIO(TypicodeService.getUser(userId))
       .map { user =>
