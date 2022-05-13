@@ -13,8 +13,6 @@ case class Todo(
 
 case class Todos(data: List[Todo]) extends TypicodeData
 
-object Todo:
-  given JsonDecoder[Todo] = DeriveJsonDecoder.gen[Todo]
-
 object Todos:
   given JsonDecoder[Todos] = DeriveJsonDecoder.gen[Todos]
+  given JsonDecoder[Todo]  = DeriveJsonDecoder.gen[Todo]

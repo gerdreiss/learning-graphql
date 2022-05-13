@@ -7,7 +7,6 @@ import caliban.schema.GenericSchema
 import caliban.schema.Schema
 
 import sttp.client3.httpclient.zio.*
-
 import zio.*
 
 import resolvers.*
@@ -19,25 +18,35 @@ object Main extends ZIOAppDefault:
     """
       |{
       |  user(id: 1) {
-      |      name
-      |      username
-      |      email
-      |      phone
-      |      website
-      |      todos {
-      |        title
-      |        completed
+      |    name
+      |    username
+      |    email
+      |    phone
+      |    website
+      |    todos {
+      |      title
+      |      completed
+      |    }
+      |    posts {
+      |      title
+      |      body
+      |      comments {
+      |        name
+      |        email
+      |        body
       |      }
+      |    }
       |  }
       |}
       |""".stripMargin
 
+  val userInterpreter = GraphQL
+    .graphQL[SttpClient & TypicodeService, UserSchema.Queries, Unit, Unit](RootResolver(UserSchema.resolver))
+    .interpreter
+
   val program =
     for
-      interpreter <-
-        GraphQL
-          .graphQL[SttpClient & TypicodeService, UserTodos.Query, Unit, Unit](RootResolver(UserTodos.resolver))
-          .interpreter
+      interpreter <- userInterpreter
       response    <- interpreter.execute(query)
       _           <- response match
                        case GraphQLResponse(data, Nil, _) => ZIO.debug(data)
