@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion     := "3.1.1"
+ThisBuild / scalaVersion     := "3.1.2"
 ThisBuild / version          := "0.1.0"
 ThisBuild / organization     := "pro.reiss"
 ThisBuild / organizationName := "reiss.pro"
