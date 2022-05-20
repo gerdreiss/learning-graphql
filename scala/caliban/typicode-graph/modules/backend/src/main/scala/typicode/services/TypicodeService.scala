@@ -1,13 +1,13 @@
-package typicode
-package services
+package typicode.services
 
 import sttp.client3.*
 import sttp.client3.httpclient.zio.*
 import sttp.model.*
+
 import zio.*
 import zio.json.JsonDecoder
 
-import data.*
+import typicode.data.*
 
 trait TypicodeService:
   def getUser(userId: UserId): RIO[SttpClient, User]

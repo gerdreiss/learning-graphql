@@ -1,10 +1,9 @@
-package typicode
-package resolvers
+package typicode.resolvers
 
 import zio.query.*
 
-import data.*
-import services.*
+import typicode.data.*
+import typicode.services.*
 
 case class TodoView(
     title: String,

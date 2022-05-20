@@ -10,8 +10,8 @@ import zhttp.service.Server
 import zio.*
 import zio.stream.ZStream
 
-import services.*
-import resolvers.*
+import typicode.services.*
+import typicode.resolvers.*
 
 object Main extends ZIOAppDefault:
 
