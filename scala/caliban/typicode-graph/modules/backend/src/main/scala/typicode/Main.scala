@@ -32,22 +32,22 @@ object Main extends ZIOAppDefault:
                          RootResolver(Queries(user => UserView.resolve(user.id)))
                        )
                        .interpreter
+      // response    <- interpreter.execute(Queries.user)
+      // _           <- response match
+      //                  case GraphQLResponse(data, Nil, _) => ZIO.debug(data)
+      //                  case GraphQLResponse(_, es, _)     => ZIO.foreach(es)(e => ZIO.debug(e))
       // this doesn't compile: 'java.lang.AssertionError: assertion failed'
-      // _           <- Server
-      //                  .start(
-      //                    8088,
-      //                    Http.route[Request] {
-      //                      case _ -> !! / "api" / "graphql" => ZHttpAdapter.makeHttpService(interpreter)
-      //                      case _ -> !! / "ws" / "graphql"  => ZHttpAdapter.makeWebSocketService(interpreter)
-      //                      case _ -> !! / "graphiql"        => graphiql
-      //                    }
-      //                  )
-      //                  .forever
-      response    <- interpreter.execute(Queries.user)
-      _           <- response match
-                       case GraphQLResponse(data, Nil, _) => ZIO.debug(data)
-                       case GraphQLResponse(_, es, _)     => ZIO.foreach(es)(e => ZIO.debug(e))
+      _           <- Server
+                       .start(
+                         8088,
+                         Http.route[Request] {
+                           case _ -> !! / "api" / "graphql" => ZHttpAdapter.makeHttpService(interpreter)
+                           case _ -> !! / "ws" / "graphql"  => ZHttpAdapter.makeWebSocketService(interpreter)
+                           case _ -> !! / "graphiql"        => graphiql
+                         }
+                       )
+                       .forever
     yield ()
 
   override def run = program
-    .provide( /*Clock.live, */ HttpClientZioBackend.layer(), TypicodeService.live)
+    .provide(HttpClientZioBackend.layer(), TypicodeService.live, Clock.live)
