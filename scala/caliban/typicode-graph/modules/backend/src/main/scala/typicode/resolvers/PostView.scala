@@ -2,7 +2,7 @@ package typicode.resolvers
 
 import zio.query.*
 
-import typicode.data.*
+import typicode.domain.*
 import typicode.services.*
 
 case class PostView(

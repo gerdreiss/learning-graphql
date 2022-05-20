@@ -7,7 +7,7 @@ import sttp.model.*
 import zio.*
 import zio.json.JsonDecoder
 
-import typicode.data.*
+import typicode.domain.*
 
 trait TypicodeService:
   def getUser(userId: UserId): RIO[SttpClient, User]

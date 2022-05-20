@@ -3,8 +3,8 @@ package typicode
 import caliban.schema.Annotations.GQLDescription
 import zio.query.*
 
-import data.*
-import resolvers.*
+import typicode.domain.*
+import typicode.resolvers.*
 
 case class UserQueryArgs(id: UserId)
 case class Queries(
