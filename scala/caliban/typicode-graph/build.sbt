@@ -1,9 +1,11 @@
+import Dependencies._
+
 ThisBuild / scalaVersion     := "3.1.2"
 ThisBuild / version          := "0.1.0"
 ThisBuild / organization     := "pro.reiss"
 ThisBuild / organizationName := "reiss.pro"
 
-Compile / run / fork := true
+// Compile / run / fork := true
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 Global / semanticdbEnabled    := true // for metals
@@ -26,9 +28,9 @@ lazy val frontend = project
       _.withSourceMap(false)
     },
     libraryDependencies ++= Seq(
-      "io.indigoengine"       %%% "tyrian"         % "0.3.2",
-      "com.github.ghostdogpr" %%% "caliban-client" % "2.0.0-RC2"
-    )
+      Libraries.tyrian.value,
+      Libraries.`caliban-client`.value,
+    ),
   )
   .dependsOn(domain.js)
 
@@ -37,13 +39,13 @@ lazy val backend = project
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "httpclient-backend-zio" % "3.5.2",
-      "com.github.ghostdogpr"         %% "caliban"                % "2.0.0-RC2",
-      "com.github.ghostdogpr"         %% "caliban-zio-http"       % "2.0.0-RC2",
-      "dev.zio"                       %% "zio"                    % "2.0.0-RC6",
-      "dev.zio"                       %% "zio-query"              % "0.3.0-RC5"
+      Libraries.`httpclient-backend-zio`.value,
+      Libraries.caliban.value,
+      Libraries.`caliban-zio-http`.value,
+      Libraries.zio.value,
+      Libraries.`zio-query`.value,
     ),
-    excludeDependencies += "org.scala-lang.modules" % "scala-collection-compat_2.13"
+    excludeDependencies += "org.scala-lang.modules" % "scala-collection-compat_2.13",
   )
   .dependsOn(domain.jvm)
 
@@ -53,7 +55,7 @@ lazy val domain = crossProject(JSPlatform, JVMPlatform)
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio-json" % "0.3.0-RC8"
+      Libraries.`zio-json`.value
     )
   )
 
@@ -69,6 +71,6 @@ val commonSettings = Seq(
     "-Xmax-inlines:64",
     "-Ykind-projector",
     "-rewrite",
-    "-indent"
+    "-indent",
   )
 )

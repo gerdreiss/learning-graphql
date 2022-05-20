@@ -14,7 +14,6 @@ import typicode.services.*
 import typicode.resolvers.*
 
 object Main extends ZIOAppDefault:
-
   val program =
     for
       interpreter <- GraphQL
@@ -29,9 +28,11 @@ object Main extends ZIOAppDefault:
                            case _ -> !! / "api" / "graphql" => ZHttpAdapter.makeHttpService(interpreter)
                            case _ -> !! / "ws" / "graphql"  => ZHttpAdapter.makeWebSocketService(interpreter)
                            case _ -> !! / "graphiql"        => Http.fromStream(ZStream.fromResource("graphiql.html"))
-                         }
+                         },
                        )
                        .forever
     yield ()
 
-  override def run = program.provide(HttpClientZioBackend.layer(), TypicodeService.live, Clock.live)
+  override def run =
+    program
+      .provide(HttpClientZioBackend.layer(), TypicodeService.live, Clock.live)
