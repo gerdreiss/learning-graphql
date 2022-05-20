@@ -38,8 +38,8 @@ lazy val backend = project
   .settings(
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "httpclient-backend-zio" % "3.5.2",
-      "com.github.ghostdogpr"         %% "caliban"                % "1.4.0",
-      "com.github.ghostdogpr"         %% "caliban-zio-http"       % "1.4.0",
+      "com.github.ghostdogpr"         %% "caliban"                % "2.0.0-RC2",
+      "com.github.ghostdogpr"         %% "caliban-zio-http"       % "2.0.0-RC2",
       "dev.zio"                       %% "zio"                    % "2.0.0-RC6",
       "dev.zio"                       %% "zio-query"              % "0.3.0-RC5"
     ),

@@ -1,29 +1,19 @@
 package typicode
 
-import caliban.GraphQL
-import caliban.GraphQLResponse
-import caliban.RootResolver
-import caliban.ZHttpAdapter
-
-import io.netty.handler.codec.http.HttpHeaderNames
-import io.netty.handler.codec.http.HttpHeaderValues
+import caliban.*
 
 import sttp.client3.httpclient.zio.*
 
 import zhttp.http.*
 import zhttp.service.Server
 
-import zio.Clock
-import zio.ZIO
-import zio.ZIOAppDefault
+import zio.*
 import zio.stream.ZStream
 
-import services.TypicodeService
+import services.*
 import resolvers.*
 
 object Main extends ZIOAppDefault:
-
-  val graphiql = Http.fromStream(ZStream.fromResource("graphiql.html"))
 
   val program =
     for
@@ -32,22 +22,16 @@ object Main extends ZIOAppDefault:
                          RootResolver(Queries(user => UserView.resolve(user.id)))
                        )
                        .interpreter
-      // response    <- interpreter.execute(Queries.user)
-      // _           <- response match
-      //                  case GraphQLResponse(data, Nil, _) => ZIO.debug(data)
-      //                  case GraphQLResponse(_, es, _)     => ZIO.foreach(es)(e => ZIO.debug(e))
-      // this doesn't compile: 'java.lang.AssertionError: assertion failed'
       _           <- Server
                        .start(
                          8088,
                          Http.route[Request] {
                            case _ -> !! / "api" / "graphql" => ZHttpAdapter.makeHttpService(interpreter)
                            case _ -> !! / "ws" / "graphql"  => ZHttpAdapter.makeWebSocketService(interpreter)
-                           case _ -> !! / "graphiql"        => graphiql
+                           case _ -> !! / "graphiql"        => Http.fromStream(ZStream.fromResource("graphiql.html"))
                          }
                        )
                        .forever
     yield ()
 
-  override def run = program
-    .provide(HttpClientZioBackend.layer(), TypicodeService.live, Clock.live)
+  override def run = program.provide(HttpClientZioBackend.layer(), TypicodeService.live, Clock.live)
